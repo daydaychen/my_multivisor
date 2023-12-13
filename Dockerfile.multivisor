@@ -1,0 +1,7 @@
+FROM multivisor_fork:latest
+
+ENV MULTIVISOR_ADDR="0.0.0.0:22000"
+ENV MODULE_NAME="app"
+
+
+CMD ["python", "-m", "my_multivisor", "--bind", "${MULTIVISOR_ADDR}", "-c", "/app/supervisord/multivisor.conf"]

@@ -1,0 +1,7 @@
+FROM multivisor_fork:latest
+
+ENV MULTIVISOR_ADDR="localhost:22000"
+ENV MODULE_NAME="app"
+
+
+CMD ["python", "-m", "http.server"]

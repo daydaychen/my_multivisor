@@ -1,0 +1,23 @@
+FROM python:3.10-slim-buster
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN python -m venv .venv && .venv/bin/pip install --no-cache-dir -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn --timeout 30 -U pip setuptools
+RUN .venv/bin/pip install --no-cache-dir -r requirements.txt -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn --timeout 60 && \
+    find /app/.venv -type d -a -name test -o -name tests -o -type f -a -name '*.pyc' -o -name '*.pyo' | xargs -I {} rm -rf {}
+
+# Install multivisor
+COPY my_multivisor my_multivisor
+COPY setup.py .
+RUN .venv/bin/python setup.py install
+
+# Copy other files
+COPY entrypoint.sh .
+COPY conf supervisord
+
+# Set environment variables
+ENV PATH="/app/.venv/bin:$PATH"
+
+ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
